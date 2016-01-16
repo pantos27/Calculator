@@ -9,5 +9,6 @@ public class PlusOperator extends AbsOperator {
     @Override
     public void run() {
         result=x+y;
+        super.run();
     }
 }

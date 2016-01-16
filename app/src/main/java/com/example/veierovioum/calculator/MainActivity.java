@@ -5,12 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    AbsOperator pendingOperator;
+    AbsOperator pendingOperation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,25 +37,27 @@ public class MainActivity extends AppCompatActivity {
      */
     private void operatorClick(Button btn) {
 
+        //get operator sign
         String operator=btn.getText().toString();
+        //store it in text view
         TextView txtOperator=(TextView) findViewById(R.id.txtOperator);
         txtOperator.setText(operator);
 
+        //store previous number
         TextView txtPrevNum=(TextView) findViewById(R.id.txtPrevNum);
         txtPrevNum.setText(getNumberAsString());
-
+        //reset to zero
         resetMainNumber();
+        //eneble = button
+        enableEqual(true);
 
-        // TODO: 16/01/2016 enelbe equals button
 
 
-        switch (operator){
-            case "/":
-            {
+    }
 
-            }
-        }
-
+    private void enableEqual(boolean b) {
+        Button btn=(Button)findViewById(R.id.buttonEquals);
+        btn.setEnabled(true);
     }
 
     private void resetMainNumber() {
@@ -77,11 +78,10 @@ public class MainActivity extends AppCompatActivity {
         if (getNumberAsString().contains(".") && number.equals("."))
             return;
 
-        // TODO: 16/01/2016 clear zero
         //check to see if new number
         if (getNumberAsString().equalsIgnoreCase("0") && !number.equals(".")
                 ){
-            txtView.clearComposingText();
+            txtView.setText("");
         }
 
 
@@ -102,6 +102,63 @@ public class MainActivity extends AppCompatActivity {
         TextView txtViw= (TextView) findViewById(R.id.txtView);
 
         return Double.parseDouble(txtViw.getText().toString());
+
+    }
+
+    public void equalsClick(View v){
+        //get the two numbers for operation
+        TextView txtPrev= (TextView) findViewById(R.id.txtPrevNum);
+        double x=Double.parseDouble(txtPrev.getText().toString());
+        double y=getDispNumber();
+
+        final TextView txtResult=(TextView) findViewById(R.id.txtView);
+
+        TextView txtOperator=(TextView)findViewById(R.id.txtOperator);
+        String operator=txtOperator.getText().toString();
+
+        switch (operator) {
+            case "/": {
+                pendingOperation =new DivOperator(x,y);
+                break;
+            }
+            case "*":{
+                pendingOperation=new MultiOperator(x,y);
+                break;
+            }
+            case "+":{
+                pendingOperation=new PlusOperator(x,y);
+                break;
+            }
+            case "-":{
+                pendingOperation=new MinusOperator(x,y);
+                break;
+            }
+            default:{
+                pendingOperation=null;
+                break;
+            }
+        }
+
+        if (pendingOperation==null)return;
+
+        pendingOperation.setResultListener(new iReturnResult() {
+            @Override
+            public void operationFinished() {
+                String result= String.valueOf(pendingOperation.getResult());
+                //trim decimal point if it's a round number
+                if(result.endsWith(".0")) {
+                    result = result.replace(".0","");
+                }
+                //show result
+                txtResult.setText(result);
+            }
+        });
+        pendingOperation.run();
+
+        enableEqual(false);
+        txtOperator.setText("");
+        txtPrev.setText("");
+
 
     }
 }

@@ -11,5 +11,6 @@ public class MultiOperator extends AbsOperator {
     @Override
     public void run() {
         result=x*y;
+        super.run();
     }
 }
