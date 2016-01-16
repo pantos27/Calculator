@@ -1,5 +1,6 @@
 package com.example.veierovioum.calculator;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    AbsOperator pendingOperator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,14 +20,49 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonClick(View v){
 
-        String number=getString(R.string.number);
-        String operator=getString(R.string.operator);
-        if (v.getTag().toString().equalsIgnoreCase(number))
+        if (v.getTag().toString().equalsIgnoreCase(getString(R.string.number)))
         {
             numberClick((Button)v);
 
+        }else if (v.getTag().toString().equalsIgnoreCase(getString(R.string.operator))){
+
+            operatorClick((Button)v);
+
         }
 
+    }
+
+    /**
+     * resolve an operator press
+     * @param btn clicked button
+     */
+    private void operatorClick(Button btn) {
+
+        String operator=btn.getText().toString();
+        TextView txtOperator=(TextView) findViewById(R.id.txtOperator);
+        txtOperator.setText(operator);
+
+        TextView txtPrevNum=(TextView) findViewById(R.id.txtPrevNum);
+        txtPrevNum.setText(getNumberAsString());
+
+        resetMainNumber();
+
+        // TODO: 16/01/2016 enelbe equals button
+
+
+        switch (operator){
+            case "/":
+            {
+
+            }
+        }
+
+    }
+
+    private void resetMainNumber() {
+        TextView v= (TextView) findViewById(R.id.txtView);
+
+        v.setText("0");
     }
 
     /**
@@ -36,15 +74,34 @@ public class MainActivity extends AppCompatActivity {
         String number=btn.getText().toString();
         TextView txtView=(TextView) findViewById(R.id.txtView);
         //check if there's already a decimal point
-        if (txtView.getText().toString().contains(".") && number.equals("."))
+        if (getNumberAsString().contains(".") && number.equals("."))
             return;
+
+        // TODO: 16/01/2016 clear zero
         //check to see if new number
-        if (txtView.getText().toString().equalsIgnoreCase("0") && !number.equals(".")
+        if (getNumberAsString().equalsIgnoreCase("0") && !number.equals(".")
                 ){
             txtView.clearComposingText();
         }
 
 
         txtView.append(number);
+    }
+
+    @NonNull
+    private String getNumberAsString() {
+        TextView txtView =(TextView)findViewById(R.id.txtView);
+        return txtView.getText().toString();
+    }
+
+    /**
+     * gets the number entered on the main display
+     * @return value of number
+     */
+    private double getDispNumber(){
+        TextView txtViw= (TextView) findViewById(R.id.txtView);
+
+        return Double.parseDouble(txtViw.getText().toString());
+
     }
 }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Calculator</string>
-    <string name="hello">Ok Calculator</string>
-    <string name="operator">operator</string>
-    <string name="number">number</string>
+    <string name="hello" translatable="false">0</string>
+    <string name="operator" translatable="false">operator</string>
+    <string name="number" translatable="false">number</string>
+    <string name="prev">Prev:</string>
 </resources>
